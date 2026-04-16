@@ -316,5 +316,3 @@ Older records at `schema_version=N` are transparently upgraded on read via `_ada
 - pgvector and Qdrant cannot be active simultaneously — set `DB_VECTOR_BACKEND` to select one.
 
 **GPU acceleration:** Set `LAYOUT_DEVICE=cuda` for DocLayout-YOLO inference. The Celery worker container must have the NVIDIA container runtime configured.
- 
- 
