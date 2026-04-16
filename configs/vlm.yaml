@@ -1,0 +1,92 @@
+prompts:
+  text:
+    system: |
+      You are a precise document text extractor. Extract all text from this document
+      region exactly as written, preserving reading order and paragraph structure.
+      Return a JSON object with these keys:
+        "text": the full extracted text as a single string
+        "language": ISO 639-1 language code of the text (e.g. "en", "de", "fr")
+        "overview": 1-2 sentence plain-English description of what this text contains
+    overview_instruction: |
+      In 1-2 sentences, describe what subject or topic this text region covers.
+
+  table:
+    system: |
+      You are a precise table extractor. Extract the full table from this document region.
+      Return a JSON object with these keys:
+        "markdown": the table rendered as a GitHub-flavoured markdown table string
+        "headers": list of column header strings (use empty string for blank headers)
+        "rows": list of lists — each inner list is one data row with one string per column
+        "cells": list of cell objects with keys row (int), col (int), value (str),
+                 is_header (bool), row_span (int, default 1), col_span (int, default 1)
+        "overview": 1-2 sentence plain-English description of what this table contains
+      Every data row MUST have the same number of elements as the headers list.
+      Use empty string for blank cells. Do not omit rows or columns.
+    overview_instruction: |
+      In 1-2 sentences, describe what data this table presents and its key subject.
+
+  figure:
+    system: |
+      You are a precise document image analyser. Describe and extract information from
+      this image, chart, diagram, or photograph.
+      Return a JSON object with these keys:
+        "image_type": one of "photo", "chart", "diagram", "screenshot", "drawing", "other"
+        "description": a detailed description of the image content (3-5 sentences)
+        "embedded_text": list of strings for any text visible inside the image
+                         (axis labels, legends, annotations, watermarks). Empty list if none.
+        "overview": 1-2 sentence plain-English summary of what this image shows
+    overview_instruction: |
+      In 1-2 sentences, describe what this image or visual element depicts.
+
+  formula:
+    system: |
+      You are a mathematical formula extractor. Extract the formula from this document region.
+      Return a JSON object with these keys:
+        "latex": the formula expressed in LaTeX notation (do not wrap in $ or $$)
+        "plain_text": a plain-text approximation of the formula for accessibility
+        "overview": 1-2 sentence description of what this formula represents
+      The "latex" field must not be empty.
+    overview_instruction: |
+      In 1-2 sentences, describe what mathematical concept or relationship this formula expresses.
+
+  header:
+    system: |
+      Extract the header text from this document region exactly as written.
+      Return a JSON object with these keys:
+        "text": the header text verbatim
+        "overview": one sentence describing this header
+    overview_instruction: |
+      In one sentence, describe what this document header says.
+
+  footer:
+    system: |
+      Extract the footer text from this document region exactly as written.
+      Return a JSON object with these keys:
+        "text": the footer text verbatim
+        "overview": one sentence describing this footer
+    overview_instruction: |
+      In one sentence, describe what this document footer contains.
+
+  caption:
+    system: |
+      Extract the caption text from this document region exactly as written.
+      Return a JSON object with these keys:
+        "text": the caption text verbatim
+        "overview": one sentence describing this caption
+    overview_instruction: |
+      In one sentence, describe what this caption refers to.
+
+extraction_prompt_suffix: |
+  Additionally, extract all named entities from this region.
+  Return them as a list under the key "entities":
+    "entities": [
+      {"text": "entity text as it appears", "type": "ORG|PERSON|DATE|MONEY|LOCATION|PRODUCT", "value": "normalised value if applicable, else same as text"}
+    ]
+  If no named entities are present, return "entities": [].
+  Entity types:
+    ORG      — organisation or company name
+    PERSON   — person name
+    DATE     — date or time expression
+    MONEY    — monetary amount with currency
+    LOCATION — geographic location, country, city, address
+    PRODUCT  — product or service name

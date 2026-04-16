@@ -1,0 +1,27 @@
+databases:
+  mongodb_uri: null
+  postgres_dsn: null
+  neo4j_uri: null
+  neo4j_user: null
+  neo4j_password: null
+  vector_backend: pgvector
+  qdrant_host: null
+  qdrant_port: 6333
+  qdrant_collection: docintel_chunks
+  image_store_path: /data/images
+  image_base_url: null
+  postgres_pool_min: 2
+  postgres_pool_max: 10
+
+queue:
+  broker_url: redis://redis:6379/0
+  result_backend: redis://redis:6379/1
+  task_time_limit: 600
+  task_soft_time_limit: 540
+
+layout:
+  model_path: configs/doclayout_yolo.pt
+  conf_threshold: 0.25
+  iou_threshold: 0.45
+  device: cpu
+  input_size: 1024
